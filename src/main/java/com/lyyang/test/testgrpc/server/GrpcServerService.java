@@ -9,6 +9,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 public class GrpcServerService extends GreeterGrpc.GreeterImplBase {
     @Override
     public void sayHello(GreeterProto.HelloRequest request, StreamObserver<GreeterProto.HelloReply> responseObserver) {
+
         GreeterProto.HelloReply reply = GreeterProto.HelloReply.newBuilder().setMessage("Hello ==> " + request.getName()).build();
         responseObserver.onNext(reply);
         responseObserver.onCompleted();

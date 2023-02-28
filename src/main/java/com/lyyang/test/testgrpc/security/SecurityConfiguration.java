@@ -1,4 +1,4 @@
-package com.lyyang.test.testgrpc;
+package com.lyyang.test.testgrpc.security;
 
 
 import net.devh.boot.grpc.server.security.authentication.BasicGrpcAuthenticationReader;

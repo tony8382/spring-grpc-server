@@ -1,3 +1,6 @@
 grpc:
   server:
-    port: 9090
+    port: 9190
+jwt:
+  signKey: TONYTONYTONYTONYTONYTONYTONYTONYTONY
+  expireTimeAsSec: 6000000

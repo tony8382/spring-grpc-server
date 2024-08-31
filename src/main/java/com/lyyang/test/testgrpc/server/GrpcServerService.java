@@ -11,15 +11,15 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.validation.annotation.Validated;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.Set;
 
 @Slf4j
 @GrpcService
+@Secured("ROLE_USER")
+@Validated
 public class GrpcServerService extends GreeterGrpc.GreeterImplBase {
 
     @Autowired
@@ -32,7 +32,6 @@ public class GrpcServerService extends GreeterGrpc.GreeterImplBase {
     private Validator validator;
 
     @Override
-    @Secured("ROLE_USER")
     public void sayHello(GreeterProto.HelloRequest request, StreamObserver<GreeterProto.HelloReply> responseObserver) {
 
         GreeterProto.HelloReply reply = GreeterProto.HelloReply.newBuilder().setMessage("Hello User ==> " + request.getName()).build();
@@ -41,7 +40,6 @@ public class GrpcServerService extends GreeterGrpc.GreeterImplBase {
     }
 
     @Override
-    @Secured("ROLE_ADMIN")
     public void sayHelloAdmin(GreeterProto.HelloRequest request, StreamObserver<GreeterProto.HelloReply> responseObserver) {
         GreeterProto.HelloReply reply = GreeterProto.HelloReply.newBuilder().setMessage("Hello Admin ==> " + request.getName()).build();
         responseObserver.onNext(reply);
@@ -61,16 +59,7 @@ public class GrpcServerService extends GreeterGrpc.GreeterImplBase {
 
     }
 
-    String authenticateE(AuthRequestDto dto) {
-
-        Set<ConstraintViolation<AuthRequestDto>> violations = validator.validate(dto);
-        if (!violations.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (ConstraintViolation<AuthRequestDto> constraintViolation : violations) {
-                sb.append(constraintViolation.getMessage());
-            }
-            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
-        }
+    String authenticateE(@Valid AuthRequestDto dto) {
 
         //Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         String token = "G";

@@ -1,6 +1,7 @@
 grpc:
   server:
     port: 9190
+    max-concurrent-calls-per-connection: 1
 jwt:
   signKey: TONYTONYTONYTONYTONYTONYTONYTONYTONY
   expireTimeAsSec: 6000000

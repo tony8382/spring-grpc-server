@@ -6,16 +6,20 @@ import com.lyyang.test.testgrpc.jwt.JwtTokenProvider;
 import com.lyyang.test.testgrpc.model.GreeterGrpc;
 import com.lyyang.test.testgrpc.model.GreeterProto;
 import com.lyyang.test.testgrpc.security.JwtClaimsService;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
+import net.devh.boot.grpc.server.serverfactory.GrpcServerConfigurer;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @GrpcService
@@ -35,12 +39,19 @@ public class GrpcServerService extends GreeterGrpc.GreeterImplBase {
     @Autowired
     private JwtClaimsService jwtClaimsService;
 
+    private int maxConcurrentCalls;
+
     @Override
     public void sayHello(GreeterProto.HelloRequest request, StreamObserver<GreeterProto.HelloReply> responseObserver) {
 
 
         log.info("app_id: {}, typ_id: {}", jwtClaimsService.getAppId(), jwtClaimsService.getPermissionId());
 
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         GreeterProto.HelloReply reply = GreeterProto.HelloReply.newBuilder().setMessage("Hello User ==> " + request.getName()).build();
         responseObserver.onNext(reply);
         responseObserver.onCompleted();

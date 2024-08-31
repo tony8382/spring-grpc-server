@@ -5,6 +5,7 @@ import com.lyyang.test.testgrpc.dto.AuthRequestMapper;
 import com.lyyang.test.testgrpc.jwt.JwtTokenProvider;
 import com.lyyang.test.testgrpc.model.GreeterGrpc;
 import com.lyyang.test.testgrpc.model.GreeterProto;
+import com.lyyang.test.testgrpc.security.JwtClaimsService;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -31,8 +32,14 @@ public class GrpcServerService extends GreeterGrpc.GreeterImplBase {
     @Autowired
     private Validator validator;
 
+    @Autowired
+    private JwtClaimsService jwtClaimsService;
+
     @Override
     public void sayHello(GreeterProto.HelloRequest request, StreamObserver<GreeterProto.HelloReply> responseObserver) {
+
+
+        log.info("app_id: {}, typ_id: {}", jwtClaimsService.getAppId(), jwtClaimsService.getPermissionId());
 
         GreeterProto.HelloReply reply = GreeterProto.HelloReply.newBuilder().setMessage("Hello User ==> " + request.getName()).build();
         responseObserver.onNext(reply);
